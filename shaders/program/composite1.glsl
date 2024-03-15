@@ -133,6 +133,10 @@ uniform float time_midnight;
 #include "/include/utility/fast_math.glsl"
 #include "/include/utility/space_conversion.glsl"
 
+#if defined (PHYSICS_MOD_OCEAN) && defined (PHYSICS_OCEAN)
+#include "/include/misc/oceans.glsl"
+#endif
+
 /*
 const bool colortex5MipmapEnabled = true;
 const bool colortex11MipmapEnabled = true;
@@ -316,6 +320,13 @@ void main() {
 #endif
 
 			normal = tbn * get_water_normal(world_pos, flat_normal, coord, flow_dir, light_levels.y, flowing_water);
+
+#if defined (PHYSICS_MOD_OCEAN) && defined (PHYSICS_OCEAN)
+			if(physics_iterationsNormal >= 1.0) {
+				WavePixelData wave = physics_wavePixel(physics_localPosition.xz, physics_localWaviness, physics_iterationsNormal, physics_gameTime);
+				normal = normalize(wave.normal /*+ mix(normal, vec3(0.0), clamp01(physics_localWaviness))*/);
+			}
+#endif
 		}
 #endif
 	//------------------------------------------------------------------------//
@@ -371,7 +382,7 @@ void main() {
 		if (isEyeInWater == 1.0) {
 			float NoV = clamp01(dot(normal, -world_dir));
 			float water_n = isEyeInWater == 1 ? air_n / water_n : water_n / air_n;
-			scene_color *= 1.0 - fresnel_dielectric_n(NoV, water_n);
+			scene_color *= 1.0 - min1(fresnel_dielectric_n(NoV, water_n) * SNELLS_WINDOW_INTENSITY);
 		}
 #endif
 	}
