@@ -813,3 +813,6 @@ const float wetnessHalflife         = 70.0;
 
   #ifdef AGX_HIGHER_PRECISION
   #endif
+
+  #ifdef PHYSICS_MOD_OCEAN
+  #endif
