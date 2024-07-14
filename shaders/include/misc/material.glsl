@@ -52,7 +52,7 @@ void decode_specular_map(vec4 specular_map, inout Material material) {
 
 	if (specular_map.g < 229.5 / 255.0) {
 		// Dielectrics
-		material.f0 = max(material.f0, specular_map.g);
+		material.f0 = vec3(0.04);
 
 		float has_sss = step(64.5 / 255.0, specular_map.b);
 		material.sss_amount = max(material.sss_amount, linear_step(64.0 / 255.0, 1.0, specular_map.b * has_sss));
@@ -235,6 +235,7 @@ Material material_from(vec3 albedo_srgb, uint material_mask, vec3 world_pos, vec
 							float smoothness = sqrt(linear_step(0.1, 0.9, hsl.z));
 							material.roughness = max(sqr(1.0 - smoothness), 0.04);
 							material.f0 = vec3(0.25);
+							material.is_metal = true;
 							material.ssr_multiplier = 1.0;
 							#endif
 						}
@@ -615,7 +616,7 @@ Material material_from(vec3 albedo_srgb, uint material_mask, vec3 world_pos, vec
 					} else { // 62-64
 						if (material_mask == 62u) { // 62
 							// Nether portal
-							material.emission = vec3(1.0) * 24 * COLORED_LIGHTS_EMISSION;
+							material.emission = vec3(1.0) * 24.0 * sqrt(COLORED_LIGHTS_EMISSION);
 						} else {  // 63
 							// End portal
 							material.emission = vec3(1.0);
@@ -630,9 +631,15 @@ Material material_from(vec3 albedo_srgb, uint material_mask, vec3 world_pos, vec
 		// Stained glass, honey and slime
 		#ifdef HARDCODED_SPECULAR
 		material.f0 = vec3(0.04);
-		material.roughness = 0.0;
-		material.ssr_multiplier = 10.0;
-		material.emission = 0.14 * albedo_sqrt;
+		material.roughness = 0.1;
+		material.ssr_multiplier = 1.0;
+
+		#ifdef GLASS_REFRACTION
+			material.f0 = material.albedo;
+			material.roughness = 0.1;
+			material.ssr_multiplier = 1.0;
+		#endif
+
 		#endif
 
 		#ifdef HARDCODED_SSS

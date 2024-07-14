@@ -1,4 +1,4 @@
-#ifndef INCLUDE_MISC_WATER_NORMAL
+#if !defined INCLUDE_MISC_WATER_NORMAL
 #define INCLUDE_MISC_WATER_NORMAL
 
 #include "/include/utility/space_conversion.glsl"
@@ -27,6 +27,8 @@ float get_water_height(vec2 coord, vec2 flow_dir, bool flowing_water) {
 	const float noise_fade         = 1.33 * WATER_NOISE_FADE;
 	const float persistence        = 0.5 * WATER_WAVE_PERSISTENCE;
 	const float lacunarity         = 2.3 * WATER_WAVE_LACUNARITY;
+	float noise_frequency          = 0.01;
+	float noise_strength           = 2.0;
 
 	vec2 wave_dir = flowing_water ?  flow_dir : vec2(cos(wave_angle), sin(wave_angle));
 	float t = (flowing_water ? wave_speed_flowing : wave_speed_still) * frameTimeCounter;
@@ -55,6 +57,12 @@ float get_water_height(vec2 coord, vec2 flow_dir, bool flowing_water) {
 		amplitude_sum += amplitude;
 
 		noise *= noise_fade;
+		noise += texture(noisetex, (coord + vec2(0.0, 0.25 * t)) * noise_frequency).y * noise_strength;
+
+    	   	noise *= noise_fade;
+      		noise_frequency *= 0.97;
+    		noise_strength *= 0.85;
+
 		amplitude *= persistence;
 		frequency *= lacunarity;
 		wave_length *= 1.25;
@@ -71,7 +79,7 @@ vec3 get_water_normal(vec3 world_pos, vec3 flat_normal, vec2 coord, vec2 flow_di
 	float wave1 = get_water_height(coord + vec2(h, 0.0), flow_dir, flowing_water);
 	float wave2 = get_water_height(coord + vec2(0.0, h), flow_dir, flowing_water);
 
-#ifdef WORLD_OVERWORLD
+#if defined WORLD_OVERWORLD
 	float normal_influence  = mix(0.01, 0.04 + 0.15 * 0, dampen(skylight));
 #else
 	float normal_influence  = 0.04;
