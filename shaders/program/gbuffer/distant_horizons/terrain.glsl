@@ -165,8 +165,11 @@ mat3 get_tbn_matrix(vec3 normal) {
 }
 
 void main() {
-    // Clip close-by DH terrain
-    if (length(scene_pos) < 0.8 * far) {
+    // Gradually fade in DH terrain
+    float fade_distance = 0.7 * far;
+    float fade_factor = smoothstep(fade_distance, 0.9 * far, length(scene_pos));
+    
+    if (fade_factor < 0.01) {
         discard;
         return;
     }
@@ -181,6 +184,9 @@ void main() {
 #else
     vec3 adjusted_color = color;
 #endif
+
+    // Apply fade factor to color
+    adjusted_color *= fade_factor;
 
 	gbuffer_data_0.x  = pack_unorm_2x8(adjusted_color.rg);
 	gbuffer_data_0.y  = pack_unorm_2x8(adjusted_color.b, clamp01(float(material_mask) * rcp(255.0)));

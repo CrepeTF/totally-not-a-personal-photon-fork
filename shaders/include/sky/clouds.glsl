@@ -153,7 +153,7 @@ float clouds_cumulus_density(vec3 pos, vec2 detail_weights, vec2 edge_sharpening
 	// Adjust density so that the clouds are wispy at the bottom and hard at the top
 	density  = max0(density);
 	density  = 1.0 - pow(1.0 - density, mix(edge_sharpening.x, edge_sharpening.y, altitude_fraction));
-	density *= 0.1 + 0.9 * smoothstep(0.2, 0.7, altitude_fraction);
+	density *= 1.0 + 1.0 * smoothstep(1.0, 1.0, altitude_fraction);
 
 	return density;
 }
@@ -289,7 +289,7 @@ CloudsResult draw_cumulus_clouds(
 	float bounced_light      = planet_albedo * light_dir.y * rcp_pi;
 
 	float extinction_coeff   = mix(0.05, 0.1, smoothstep(0.0, 0.3, abs(sun_dir.y))) * (1.0 - 0.33 * rainStrength) * (1.0 - 0.6 * altocumulus_shadow) * CLOUDS_CUMULUS_DENSITY;
-	float scattering_coeff   = extinction_coeff * mix(1.00, 0.66, rainStrength);
+	float scattering_coeff   = extinction_coeff * mix(1.00, 1.96, rainStrength);
 
 	float dynamic_thickness  = mix(0.5, 1.0, smoothstep(0.4, 0.6, clouds_cumulus_coverage.y));
 	vec2  detail_weights     = mix(vec2(0.33, 0.40), vec2(0.25, 0.20), sqr(clouds_stratus_amount)) * CLOUDS_CUMULUS_DETAIL_STRENGTH;

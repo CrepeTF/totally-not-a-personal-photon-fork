@@ -50,7 +50,7 @@ vec3 get_wind_displacement(vec3 world_pos, float wind_speed, float wind_strength
 	vec3 gust = vec3(wind_dir * gust_amount, 0.1 * gust_amount).xzy;
 
 	world_pos = 32.0 * world_pos + 3.0 * t + vec3(0.0, golden_angle, 2.0 * golden_angle);
-	vec3 wobble = sin(world_pos) + 0.5 * sin(2.0 * world_pos) + 0.25 * sin(4.0 * world_pos);
+	vec3 wobble = sin(world_pos) + 0.5 * sin(2.0 * world_pos) + 3.0 * sin(1.0 * world_pos);
 
 	if (is_tall_plant_top_vertex) { gust *= 2.0; wobble *= 0.5; }
 

@@ -4,91 +4,68 @@
 #include "voxelization.glsl"
 #include "/include/light/lpv/light_colors.glsl"
 
-bool is_emitter(uint block_id) {
-	return 32u <= block_id && block_id < 64u;
-}
+// Precompute constants
+const uint EMITTER_MIN = 32u, EMITTER_MAX = 64u;
+const uint TRANSLUCENT_MIN = 164u, TRANSLUCENT_MAX = 180u;
+const uint CUSTOM_MIN = 64u, CUSTOM_MAX = 96u;
+const uint CANDLE_MIN = 264u, CANDLE_MAX = 332u;
 
-bool is_translucent(uint block_id) {
-	return 164u <= block_id && block_id < 180u;
-}
-
-// Workaround for emitter ids 61 and >=64 not working in compute - TODO
-bool is_custom(uint block_id) {
-	return 64u <= block_id && block_id < 96u;
-}
-bool is_candle(uint block_id) {
-	return 264u <= block_id && block_id < 332u;
-}
+#define IS_IN_RANGE(x, min, max) ((x) >= (min) && (x) < (max))
 
 float get_candle_intensity(uint level) {
-	//return level > 0 ? (level > 1 ? (level > 2 ? 10.0 : 8.0) : 6.0) : 3.0;
-	return sqr(float(level + 1u)) + 1u;
+    return float(level * level + 2u);
 }
 
 vec3 get_emitted_light(uint block_id) {
-	if (is_emitter(block_id)) {
-		return texelFetch(light_data_sampler, ivec2(int(block_id) - 32, 0), 0).rgb;
-	} else if (is_custom(block_id)) {
-		return light_color[block_id - 32u];
-	} else if (is_candle(block_id)) {
-		if(block_id > 327) { // Uncolored Candle
-			return light_color[18u] / 8.0 * get_candle_intensity(block_id - 328u);
-		}
-		block_id -= 264u;
-		uint level = uint(floor(float(block_id) / 16.0));
-		float intensity = get_candle_intensity(level);
-		return tint_color[block_id - level * 16u] * intensity;
-	} else {
-		return vec3(0.0);
-	}
+    if (IS_IN_RANGE(block_id, EMITTER_MIN, EMITTER_MAX)) {
+        return texelFetch(light_data_sampler, ivec2(int(block_id) - 32, 0), 0).rgb;
+    } else if (IS_IN_RANGE(block_id, CUSTOM_MIN, CUSTOM_MAX)) {
+        return light_color[block_id - 32u];
+    } else if (IS_IN_RANGE(block_id, CANDLE_MIN, CANDLE_MAX)) {
+        uint adjusted_id = block_id - CANDLE_MIN;
+        uint level = adjusted_id >> 4u;
+        float intensity = get_candle_intensity(level);
+        return (block_id > 327u) ? light_color[18u] * (0.125 * intensity) : tint_color[adjusted_id & 15u] * intensity;
+    }
+    return vec3(0.0);
 }
 
 vec3 get_tint(uint block_id, bool is_transparent) {
-	if (is_translucent(block_id)) {
-		return texelFetch(light_data_sampler, ivec2(int(block_id) - 164, 1), 0).rgb;
-	} else {
-		return vec3(is_transparent);
-	}
-}
-
-ivec3 clamp_to_voxel_volume(ivec3 pos) {
-	return clamp(pos, ivec3(0), voxel_volume_size - 1);
+    return IS_IN_RANGE(block_id, TRANSLUCENT_MIN, TRANSLUCENT_MAX)
+        ? texelFetch(light_data_sampler, ivec2(int(block_id) - 164, 1), 0).rgb
+        : vec3(float(is_transparent));
 }
 
 vec3 gather_light(sampler3D light_sampler, ivec3 pos) {
-	const ivec3[6] face_offsets = ivec3[6](
-		ivec3( 1,  0,  0),
-		ivec3( 0,  1,  0),
-		ivec3( 0,  0,  1),
-		ivec3(-1,  0,  0),
-		ivec3( 0, -1,  0),
-		ivec3( 0,  0, -1)
-	);
-
-	return texelFetch(light_sampler, pos, 0).rgb +
-	       texelFetch(light_sampler, clamp_to_voxel_volume(pos + face_offsets[0]), 0).xyz +
-	       texelFetch(light_sampler, clamp_to_voxel_volume(pos + face_offsets[1]), 0).xyz +
-	       texelFetch(light_sampler, clamp_to_voxel_volume(pos + face_offsets[2]), 0).xyz +
-	       texelFetch(light_sampler, clamp_to_voxel_volume(pos + face_offsets[3]), 0).xyz +
-	       texelFetch(light_sampler, clamp_to_voxel_volume(pos + face_offsets[4]), 0).xyz +
-	       texelFetch(light_sampler, clamp_to_voxel_volume(pos + face_offsets[5]), 0).xyz;
+    const ivec3 offsets[7] = ivec3[7](
+        ivec3(0), ivec3(1,0,0), ivec3(-1,0,0),
+        ivec3(0,1,0), ivec3(0,-1,0), ivec3(0,0,1), ivec3(0,0,-1)
+    );
+    
+    vec3 sum = vec3(0.0);
+    for (int i = 0; i < 7; ++i) {
+        sum += texelFetch(light_sampler, clamp(pos + offsets[i], ivec3(0), voxel_volume_size - 1), 0).rgb;
+    }
+    return sum * (1.0 / 7.0);
 }
 
 void update_lpv(writeonly image3D light_img, sampler3D light_sampler) {
-	ivec3 pos = ivec3(gl_GlobalInvocationID);
-	ivec3 previous_pos = ivec3(vec3(pos) - floor(previousCameraPosition) + floor(cameraPosition));
+    ivec3 pos = ivec3(gl_GlobalInvocationID);
+    ivec3 previous_pos = ivec3(vec3(pos) - floor(previousCameraPosition) + floor(cameraPosition));
 
-	uint block_id      = texelFetch(voxel_sampler, pos, 0).x;
-	bool transparent   = block_id == 0u || block_id >= 1024u;
-	     block_id      = block_id & 1023;
-	vec3 light_avg     = gather_light(light_sampler, previous_pos) * rcp(7.0);
-	vec3 emitted_light = get_emitted_light(block_id);
-	     emitted_light = sqr(emitted_light) * sign(emitted_light);
-	vec3 tint          = sqr(get_tint(block_id, transparent));
+    uint block_data = texelFetch(voxel_sampler, pos, 0).x;
+    bool transparent = (block_data == 0u) || (block_data >= 1024u);
+    uint block_id = block_data & 1023u;
 
-	vec3 light = emitted_light + light_avg * tint;
+    vec3 light_avg = gather_light(light_sampler, previous_pos);
+    vec3 emitted_light = get_emitted_light(block_id);
+    emitted_light *= abs(emitted_light);
+    vec3 tint = get_tint(block_id, transparent);
+    tint *= tint;
 
-	imageStore(light_img, pos, vec4(light, 0.0));
+    vec3 light = emitted_light + light_avg * tint;
+
+    imageStore(light_img, pos, vec4(light, 0.0));
 }
 
 #endif // INCLUDE_LIGHT_LPV_FLOODFILL

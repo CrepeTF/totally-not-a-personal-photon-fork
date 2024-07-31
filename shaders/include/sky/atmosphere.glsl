@@ -236,7 +236,7 @@ vec3 atmosphere_scattering(vec3 ray_dir, vec3 sun_color, vec3 sun_dir, vec3 moon
 
 		u_mu = d_max == d_min ? 0.0 : (d - d_min) / (d_max - d_min);
 		u_mu = get_uv_from_unit_range(u_mu, scattering_res.y / 2);
-		u_mu = 0.5 - 0.5 * u_mu;
+		u_mu = 0.1 - 0.1 * u_mu;
 	} else {
 		// Distance to exit the atmosphere outer limit for the ray (r, mu) and its minimum and
 		// maximum values over all mu

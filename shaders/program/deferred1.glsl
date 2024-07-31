@@ -17,7 +17,7 @@
 
 out vec2 uv;
 
-#if defined WORLD_OVERWORLD
+#if defined WORLD_OVERWORLD || defined WORLD_END
 flat out vec3 sun_color;
 flat out vec3 moon_color;
 flat out vec3 sky_color;
@@ -75,6 +75,8 @@ uniform float biome_may_snow;
 uniform float biome_temperature;
 uniform float biome_humidity;
 
+uniform int worldType; // 0 for overworld, 1 for nether, 2 for end
+
 // ------------
 //   Includes
 // ------------
@@ -83,7 +85,7 @@ uniform float biome_humidity;
 #define WEATHER_AURORA
 #define WEATHER_CLOUDS
 
-#if defined WORLD_OVERWORLD
+#if defined WORLD_OVERWORLD || defined WORLD_END
 #include "/include/light/colors/light_color.glsl"
 #include "/include/light/colors/weather_color.glsl"
 #include "/include/misc/weather.glsl"
@@ -93,7 +95,7 @@ uniform float biome_humidity;
 void main() {
 	uv = gl_MultiTexCoord0.xy;
 
-#if defined WORLD_OVERWORLD
+#if defined WORLD_OVERWORLD || defined WORLD_END
 	sun_color = get_sun_exposure() * get_sun_tint();
 	moon_color = get_moon_exposure() * get_moon_tint();
 
@@ -136,7 +138,7 @@ layout (location = 1) out float apparent_distance;
 
 in vec2 uv;
 
-#if defined WORLD_OVERWORLD
+#if defined WORLD_OVERWORLD || defined WORLD_END
 flat in vec3 sun_color;
 flat in vec3 moon_color;
 flat in vec3 sky_color;
@@ -219,6 +221,8 @@ uniform float biome_may_snow;
 uniform float biome_temperature;
 uniform float biome_humidity;
 
+uniform int worldType; // 0 for overworld, 1 for nether, 2 for end
+
 // ------------
 //   Includes
 // ------------
@@ -226,7 +230,7 @@ uniform float biome_humidity;
 #define ATMOSPHERE_SCATTERING_LUT depthtex0
 #define MIE_PHASE_CLAMP
 
-#if defined WORLD_OVERWORLD
+#if defined WORLD_OVERWORLD || defined WORLD_END
 #include "/include/sky/atmosphere.glsl"
 #include "/include/sky/aurora.glsl"
 #include "/include/sky/clouds.glsl"
@@ -256,7 +260,7 @@ void main() {
 
 	clouds = vec4(0.0, 0.0, 0.0, 1.0);
 
-#if defined WORLD_OVERWORLD
+#if defined WORLD_OVERWORLD || defined WORLD_END
 	ivec2 checkerboard_pos = CLOUDS_TEMPORAL_UPSCALING * texel + clouds_checkerboard_offsets[frameCounter % checkerboard_area];
 
 	vec2 new_uv = vec2(checkerboard_pos) / vec2(view_res) * rcp(float(taau_render_scale));

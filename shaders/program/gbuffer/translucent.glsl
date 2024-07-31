@@ -150,7 +150,7 @@ void main() {
 
 #if defined PROGRAM_GBUFFERS_TEXTURED && !defined IS_IRIS
 	// Make enderman/nether portal particles glow
-	if (gl_Color.r > gl_Color.g && gl_Color.g < 0.6 && gl_Color.b > 0.4) material_mask = 47;
+	if (gl_Color.r > gl_Color.g && gl_Color.g < 0.6 && gl_Color.b > 0.4) material_mask = 77;
 #endif
 
 #if defined PROGRAM_GBUFFERS_WATER

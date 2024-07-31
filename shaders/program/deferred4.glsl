@@ -70,6 +70,9 @@ uniform float time_noon;
 uniform float time_sunset;
 uniform float time_midnight;
 
+uniform float lightning_flash_iris;
+uniform float lightning_flash_of;
+
 // ------------
 //   Includes
 // ------------
@@ -255,6 +258,9 @@ uniform float time_sunrise;
 uniform float time_noon;
 uniform float time_sunset;
 uniform float time_midnight;
+
+uniform float lightning_flash_iris;
+uniform float lightning_flash_of;
 
 // ------------
 //   Includes

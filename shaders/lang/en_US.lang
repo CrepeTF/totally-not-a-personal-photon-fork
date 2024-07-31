@@ -69,6 +69,10 @@ screen.clouds_cumulus_congestus        = Cumulus Congestus Clouds Settings
 screen.clouds_cumulonimbus             = Cumulonimbus Clouds Settings
 screen.clouds_cirrus                   = Cirrus Clouds Settings
 screen.clouds_minecrafty               = Blocky Clouds Settings
+screen.nebula                          = Nebula
+screen.nebula_color                    = Nebula Color
+screen.nebula_color.comment            = Adjust the colors of different nebula components:      Cloud 1-4 Color: Sets the color for each cloud layer        Space Color: Determines the background color of space      These settings affect the overall appearance and mood of the nebula
+screen.shooting_stars                  = Shooting Stars 
 
 screen.fog_rlh                         = Rayleigh Coefficient
 screen.fog_mie                         = Mie Coefficient
@@ -278,7 +282,6 @@ value.shadowDistance.1280.0            = 80 chunks
 value.shadowDistance.1536.0            = 96 chunks
 
 # Sky settings
-
 option.VANILLA_SUN                     = Vanilla Sun
 option.MOON_TYPE                       = Moon Type
 option.SUN_ANGULAR_RADIUS              = Sun Angular Radius
@@ -292,6 +295,57 @@ option.STARS_INTENSITY                 = Stars Intensity
 option.STARS_INTENSITY.comment         = Controls the brightness of stars in the night sky
 option.STARS_COVERAGE                  = Stars Coverage
 option.STARS_COVERAGE.comment          = Controls the number of stars in the night sky
+
+# Nebula
+option.NEBULA_ENABLED = Nebula
+option.NEBULA_ENABLED.comment = Enables the nebula effect
+option.NEBULA_SCALE = Nebula Scale
+option.NEBULA_SCALE.comment = Controls the scale of the nebula. Higher values make the nebula appear more zoomed in.
+option.NEBULA_DENSITY = Nebula Density
+option.NEBULA_DENSITY.comment = Controls the density of the nebula. Higher values make the nebula more dense.
+option.NEBULA_BRIGHTNESS = Nebula Brightness
+option.NEBULA_BRIGHTNESS.comment = Controls the brightness of the nebula. Higher values make the nebula more bright.
+option.NEBULA_MOVEMENT_SPEED = Nebula Movement Speed
+option.NEBULA_MOVEMENT_SPEED.comment = Controls the speed of the nebula movement. Higher values make the nebula move faster.
+
+
+# Nebula Colors
+option.NEBULA_COLOR1_R = Nebula Color 1 Red
+option.NEBULA_COLOR1_G = Nebula Color 1 Green
+option.NEBULA_COLOR1_B = Nebula Color 1 Blue
+
+option.NEBULA_COLOR2_R = Nebula Color 2 Red
+option.NEBULA_COLOR2_G = Nebula Color 2 Green
+option.NEBULA_COLOR2_B = Nebula Color 2 Blue
+
+option.NEBULA_COLOR3_R = Nebula Color 3 Red
+option.NEBULA_COLOR3_G = Nebula Color 3 Green
+option.NEBULA_COLOR3_B = Nebula Color 3 Blue
+
+# Shooting Stars
+option.SHOOTING_STARS = Shooting Stars
+option.SHOOTING_STARS.comment = Enables the shooting stars effect
+
+option.SHOOTING_STARS_ZOOM = Shooting Stars Zoom
+option.SHOOTING_STARS_ZOOM.comment = Controls the zoom level of the shooting stars effect
+
+option.SHOOTING_STARS_SPEED = Shooting Stars Speed
+option.SHOOTING_STARS_SPEED.comment = Adjusts the speed at which shooting stars move across the sky
+
+option.SHOOTING_STARS_DENSITY = Shooting Stars Density
+option.SHOOTING_STARS_DENSITY.comment = Determines how densely packed the shooting stars appear
+
+option.SHOOTING_STARS_COUNT = Shooting Stars Count
+option.SHOOTING_STARS_COUNT.comment = Sets the number of shooting stars visible at any given time
+
+option.SHOOTING_STARS_LINE_THICKNESS = Shooting Stars Line Thickness
+option.SHOOTING_STARS_LINE_THICKNESS.comment = Adjusts the thickness of the shooting star trails
+
+option.SHOOTING_STARS_TRAIL_LENGTH = Shooting Stars Trail Length
+option.SHOOTING_STARS_TRAIL_LENGTH.comment = Controls the length of the trails left behind by shooting stars
+
+option.SHOOTING_STARS_TRAIL_FADE = Shooting Stars Trail Fade
+option.SHOOTING_STARS_TRAIL_FADE.comment = Determines how quickly the trails of shooting stars fade away
 
 value.MOON_TYPE.MOON_VANILLA           = Vanilla Moon
 value.MOON_TYPE.MOON_PHOTON            = Photon Moon
