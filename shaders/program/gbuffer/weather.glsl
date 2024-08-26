@@ -74,10 +74,9 @@ void main() {
 //----------------------------------------------------------------------------//
 #if defined fsh
 
-layout (location = 0) out vec4 scene_color;
-layout (location = 1) out vec4 gbuffer_data;
+layout (location = 0) out vec4 frag_color;
 
-/* RENDERTARGETS: 0,1 */
+/* RENDERTARGETS: 13 */
 
 in vec2 uv;
 
@@ -115,16 +114,9 @@ void main() {
 
 	bool is_rain = (abs(base_color.r - base_color.b) > eps);
 
-	scene_color = is_rain
+	frag_color = is_rain
 		? vec4(get_rain_color(), RAIN_OPACITY * base_color.a) * tint
 		: vec4(get_snow_color(), SNOW_OPACITY * base_color.a) * tint;
-
-	uint material_mask = is_rain ? rain_flag : snow_flag;
-
-	gbuffer_data.x  = pack_unorm_2x8(base_color.rg);
-	gbuffer_data.y  = pack_unorm_2x8(base_color.b, float(material_mask) * rcp(255.0));
-	gbuffer_data.z  = pack_unorm_2x8(encode_unit_vector(vec3(0.0, 1.0, 0.0)));
-	gbuffer_data.w  = pack_unorm_2x8(vec2(1.0));
 }
 
 #endif
