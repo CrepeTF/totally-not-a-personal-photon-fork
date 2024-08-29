@@ -1,7 +1,7 @@
-#if !defined INCLUDE_LIGHT_SPECULAR_LIGHTING
-#define INCLUDE_LIGHT_SPECULAR_LIGHTING
+#if !defined INCLUDE_LIGHTING_SPECULAR_LIGHTING
+#define INCLUDE_LIGHTING_SPECULAR_LIGHTING
 
-#include "/include/light/bsdf.glsl"
+#include "/include/lighting/bsdf.glsl"
 #include "/include/misc/distant_horizons.glsl"
 #include "/include/misc/material.glsl"
 #include "/include/misc/raytracer.glsl"
@@ -351,4 +351,4 @@ float ssr_limiter;
 }
 #endif // PROGRAM_COMPOSITE1
 
-#endif // INCLUDE_LIGHT_SPECULAR_LIGHTING
+#endif // INCLUDE_LIGHTING_SPECULAR_LIGHTING

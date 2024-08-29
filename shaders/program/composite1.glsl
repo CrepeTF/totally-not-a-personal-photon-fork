@@ -124,7 +124,7 @@ uniform float time_midnight;
 #define TEMPORAL_REPROJECTION
 
 #include "/include/fog/simple_fog.glsl"
-#include "/include/light/specular_lighting.glsl"
+#include "/include/lighting/specular_lighting.glsl"
 #include "/include/misc/distant_horizons.glsl"
 #include "/include/misc/material.glsl"
 #include "/include/misc/rain_puddles.glsl"
@@ -175,7 +175,7 @@ vec3 purkinje_shift(vec3 rgb, vec2 light_levels) {
 	float purkinje_intensity  = 0.05 * PURKINJE_SHIFT_INTENSITY;
 	      purkinje_intensity  = purkinje_intensity - purkinje_intensity * smoothstep(-0.12, -0.06, sun_dir.y) * light_levels.y; // No purkinje shift in daylight
 	      purkinje_intensity *= clamp01(1.0 - light_levels.x); // Reduce purkinje intensity in blocklight
-	      purkinje_intensity *= clamp01(0.3 + 0.7 * cube(light_levels.y)); // Reduce purkinje intensity underground
+	      purkinje_intensity *= clamp01(0.3 + 0.7 * cube(max(light_levels.y, eye_skylight))); // Reduce purkinje intensity underground
 
 	if (purkinje_intensity < eps) return rgb;
 

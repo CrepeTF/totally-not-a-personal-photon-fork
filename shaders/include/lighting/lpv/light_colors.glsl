@@ -1,5 +1,5 @@
-#if !defined INCLUDE_LIGHT_LPV_LIGHT_COLORS
-#define INCLUDE_LIGHT_LPV_LIGHT_COLORS
+#if !defined INCLUDE_LIGHTING_LPV_LIGHT_COLORS
+#define INCLUDE_LIGHTING_LPV_LIGHT_COLORS
 
 const vec3[32] light_color = vec3[32](
 	vec3(S_WHITE_LIGHT_R, S_WHITE_LIGHT_G, S_WHITE_LIGHT_B) * S_WHITE_LIGHT_I, // Strong white light
@@ -55,4 +55,4 @@ const vec3[16] tint_color = vec3[16](
 	vec3(0.7, 0.7, 0.7)  // Light gray
 );
 
-#endif // INCLUDE_LIGHT_LPV_LIGHT_COLORS
+#endif // INCLUDE_LIGHTING_LPV_LIGHT_COLORS

@@ -1,7 +1,7 @@
 #if !defined INCLUDE_FOG_END_FOG_VL
 #define INCLUDE_FOG_END_FOG_VL
 
-#include "/include/light/distortion.glsl"
+#include "/include/lighting/distortion.glsl"
 #include "/include/utility/color.glsl"
 #include "/include/utility/fast_math.glsl"
 #include "/include/utility/phase_functions.glsl"
@@ -55,7 +55,7 @@ mat2x3 raymarch_end_fog(
 	const float step_count_growth = 0.5;
 
 	const vec3 end_color        = from_srgb(vec3(END_AMBIENT_R, END_AMBIENT_G, END_AMBIENT_B));
-	const float density_scale   = .01;
+	const float density_scale   = 0.01;
 	const vec3 absorption_coeff = exp2(-end_color) * density_scale;
 	const vec3 scattering_coeff = vec3(1.0) * density_scale;
 	const vec3 extinction_coeff = absorption_coeff + scattering_coeff;

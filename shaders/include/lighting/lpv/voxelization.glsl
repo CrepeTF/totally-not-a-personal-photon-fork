@@ -1,5 +1,5 @@
-#ifndef INCLUDE_LIGHT_LPV_VOXELIZATION
-#define INCLUDE_LIGHT_LPV_VOXELIZATION
+#if !defined INCLUDE_LIGHTING_LPV_VOXELIZATION
+#define INCLUDE_LIGHTING_LPV_VOXELIZATION
 
 const ivec3 voxel_volume_size = ivec3(VOXEL_VOLUME_SIZE);
 
@@ -25,7 +25,7 @@ bool is_voxelized(uint block_id, bool vertex_at_grid_corner) {
 	    block_id == 18u || // Transparent metal objects
 	    block_id == 27u || // Carpets
 	    block_id == 80u;   // Miscellaneous transparent
-
+	
 	bool is_light_emitting_block = 32u <= block_id && block_id < 64u;
 
 	bool is_light_tinting_block  = 64u <= block_id && block_id < 80u;
@@ -89,4 +89,4 @@ void update_voxel_map(uint block_id) {
 }
 #endif
 
-#endif // INCLUDE_LIGHT_LPV_VOXELIZATION
+#endif // INCLUDE_LIGHTING_LPV_VOXELIZATION
